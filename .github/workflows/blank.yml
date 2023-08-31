@@ -37,7 +37,7 @@ jobs:
         run: echo "cdk_json=$(cat outputs.json)" >> $GITHUB_OUTPUT
       - name: Get Webhook URL
         id: webhook
-        run: echo $"url=echo ${{ fromJson(steps.cdk_output.outputs.cdk_json).\"auto-builder-stack-enhancedApp-stg-DOP-3977-webhooks\" }}"
+        run: echo $"url=echo ${{ fromJson(steps.cdk_output.outputs.cdk_json).auto-builder-stack-enhancedApp-stg-DOP-3977-webhooks }}"
       - name: Comment on PR
         run: gh pr comment 1 --body "${{ steps.webhook.output.url}}"
         env: 

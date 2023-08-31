@@ -38,3 +38,5 @@ jobs:
         run: echo $"url=echo ${{ fromJson(steps.cdk_output.outputs.cdk_json).auto-builder-stack-enhancedApp-stg-DOP-3977-webhooks }}"
       - name: Comment on PR
         run: gh pr comment 1 --body "${{ steps.webhook.output.url}}"
+        env: 
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -27,7 +27,7 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
 
-      # Runs a set of commands using the runners shell
+
       - name: Create dummy file
         run: |
           touch outputs.json
@@ -35,10 +35,21 @@ jobs:
       - name: Set CDK output into a variable
         id: cdk_output
         run: echo "cdk_json=$(cat outputs.json)" >> $GITHUB_OUTPUT
-      - name: Get Webhook URL
+      # Runs a set of commands using the runners shell
+      - name: Get Webhook URL 
+        uses: actions/github-script@v6
         id: webhook
-        run: echo $"url=echo ${{ fromJson(steps.cdk_output.outputs.cdk_json).auto-builder-stack-enhancedApp-stg-DOP-3977-webhooks }}"
+        with:
+          script: |
+            const fs = require('fs');
+            const outputsFile = fs.readFileSync('outputs.json').toString();
+            const outputs = JSON.parse(outputsFile);
+
+            const webhook = Object.values(outputs['auto-builder-stack-enhancedApp-stg-DOP-3977-webhooks'])[0]
+            return webhook
+          result-encoding: string
+          
       - name: Comment on PR
-        run: gh pr comment 1 --body "${{ steps.webhook.output.url}}"
+        run: gh pr comment 1 --body "${{ steps.webhook.output.result}}"
         env: 
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
